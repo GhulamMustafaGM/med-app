@@ -10,6 +10,10 @@ app.set('view engine', 'mustache');
 
 app.use(express.static('public'));
 
+app.get('/add', (req,res)=>{
+    res.render('med-form');
+});
+
 app.get('/meds',(req,res)=>{
     res.render('meds');
 })
