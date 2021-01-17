@@ -40,8 +40,25 @@ app.post('/meds/add',(req,res)=>{
             res.redirect('/meds');
         });
 });
+
 app.get('/meds',(req,res)=>{
-    res.render('meds');
+
+    const client = new Client({
+
+        user: 'postgres',
+        host: 'localhost',
+        database: 'medical',
+        password: 'admin',
+        port: 5432,
+    });
+    client.connect()
+        .then(()=>{
+                return client.query('SELECT * FROM meds');
+        })
+        .then((results)=>{
+            console.log('results?', results);
+            res.render('meds',results);
+        });
 });
 
 app.listen(5001, ()=>{
