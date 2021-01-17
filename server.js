@@ -1,8 +1,11 @@
 const express = require('express');
 const mustacheExpress = require('mustache-express');
-const bodyParser = require('body-parser');
+
 const app = express();
 const mustache = mustacheExpress();
+const bodyParser = require('body-parser');
+const { Client } = require('pg');
+
 mustache.cache = null;
 app.engine('mustache',mustache);
 app.set('view engine', 'mustache');
@@ -16,9 +19,27 @@ app.get('/add', (req,res)=>{
 
 app.post('/meds/add',(req,res)=>{
     console.log('post body',req.body);
-    res.redirect('/meds');
-});
 
+    const client = new Client({
+
+        user: 'postgres',
+        host: 'localhost',
+        database: 'medical',
+        password: 'admin',
+        port: 5432,
+    });
+    client.connect()
+        .then(()=>{
+            console.log('Connection Complete');
+            const sql = 'INSERT INTO meds (name,count,brand) VALUES ($1, $2. $3)'
+            const params = ['req.body.name', req.body.count, 'req.body.brand'];
+            return client.query(sql,params);
+        })
+        .then((result)=>{
+            console.log('results?',result);
+            res.redirect('/meds');
+        });
+});
 app.get('/meds',(req,res)=>{
     res.render('meds');
 });
