@@ -31,8 +31,8 @@ app.post('/meds/add',(req,res)=>{
     client.connect()
         .then(()=>{
             console.log('Connection Complete');
-            const sql = 'INSERT INTO meds (name,count,brand) VALUES ($1, $2. $3)'
-            const params = ['req.body.name', req.body.count, 'req.body.brand'];
+            const sql = 'INSERT INTO meds (name,count,brand) VALUES ($1, $2, $3)'
+            const params = [req.body.name, req.body.count, req.body.brand];
             return client.query(sql,params);
         })
         .then((result)=>{
