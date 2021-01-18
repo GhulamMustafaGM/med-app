@@ -79,7 +79,27 @@ app.post('/meds/delete/:id', (req,res)=>{
         .then((results)=>{
             res.redirect('/meds');
         });
+});
 
+app.get('/meds/edit/:id', (req,res)=>{
+    const client = new Client({
+
+        user: 'postgres',
+        host: 'localhost',
+        database: 'medical',
+        password: 'admin',
+        port: 5432,
+    });
+    client.connect()
+        .then(()=>{
+                const sql = 'SELECT * FROM meds WHERE mid=$1'
+                const params = [req.params.id];
+                return client.query(sql,params);
+        })
+        .then((results)=>{
+            console.log('results?',results)
+            res.render('meds-edit',{med:results.rows[0]});
+        });
 });
 
 app.listen(5001, ()=>{
