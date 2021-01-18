@@ -41,6 +41,28 @@ app.post('/meds/add',(req,res)=>{
         });
 });
 
+// Admin portal
+
+app.get('/dashboard', (req,res)=>{
+
+    const client = new Client({
+
+        user: 'postgres',
+        host: 'localhost',
+        database: 'medical',
+        password: 'admin',
+        port: 5432,
+    });
+    client.connect()
+        .then(()=>{
+            return client.query('SELECT SUM(count) FROM meds; SELECT DISTINCT COUNT(brand) FROM meds');
+        })
+        .then((results)=>{
+            console.log('?results', results[0]);
+            console.log('?results',results[1]);
+        });
+});
+
 app.get('/meds',(req,res)=>{
 
     const client = new Client({
