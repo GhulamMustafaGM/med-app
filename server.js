@@ -61,6 +61,27 @@ app.get('/meds',(req,res)=>{
         });
 });
 
+app.post('/meds/delete/:id', (req,res)=>{
+    const client = new Client({
+
+        user: 'postgres',
+        host: 'localhost',
+        database: 'medical',
+        password: 'admin',
+        port: 5432,
+    });
+    client.connect()
+        .then(()=>{
+                const sql = 'DELETE FROM meds WHERE mid=$1'
+                const params = [req.params.id];
+                return client.query(sql,params);
+        })
+        .then((results)=>{
+            res.redirect('/meds');
+        });
+
+});
+
 app.listen(5001, ()=>{
     console.log('Listening to port 5001');
 })
